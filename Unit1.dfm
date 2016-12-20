@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 410
-  Top = 250
+  Left = 454
+  Top = 311
   Width = 368
   Height = 330
   Caption = 'MYF Image Converter v0.1'
@@ -14,6 +14,7 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  OnDestroy = FormDestroy
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
@@ -22,6 +23,7 @@ object Form1: TForm1
     Top = 8
     Width = 256
     Height = 256
+    OnPaint = PaintBox1Paint
   end
   object ButtonLoad: TButton
     Left = 272
@@ -30,6 +32,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Load'
     TabOrder = 0
+    OnClick = ButtonLoadClick
   end
   object ButtonSaveAs: TButton
     Left = 272
@@ -44,6 +47,7 @@ object Form1: TForm1
       Caption = '&File'
       object Open1: TMenuItem
         Caption = '&Open...'
+        OnClick = Open1Click
       end
       object SaveAs1: TMenuItem
         Caption = 'Save &As...'
@@ -61,5 +65,9 @@ object Form1: TForm1
         Caption = '&About...'
       end
     end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 320
+    Top = 8
   end
 end

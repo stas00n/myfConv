@@ -1,2 +1,7 @@
 *.~*
 *.obj
+lpng/*.~*
+lpng/*.obj
+zlib/*.~*
+zlib/*.obj
+
