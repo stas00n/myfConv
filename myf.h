@@ -25,7 +25,10 @@ typedef struct
 }RGB32_T;
 
 int SaveBitmapToMYF(char* filename, MYFHEAD_T* head, WORD* clut, BYTE* sequence);
+int LoadBitmapFromMYF(char* filename, Graphics::TBitmap* bm);
+
 WORD RGB32To16(RGB32_T* src, WORD* dest);
+DWORD RGB16To32(WORD* src, RGB32_T* dest);
 void ConvertBitmap32To16(Graphics::TBitmap* bm, WORD* bm16);
 WORD BuildCLUT(WORD* bitmap16, DWORD pixelCount, WORD* CLUT);
 int BuildSequence(BYTE* buf,

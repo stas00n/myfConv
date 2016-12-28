@@ -32,6 +32,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
   PageControl1->Height = Form1->Height - 64;
   ButtonLoad->Left = PageControl1->Width - 96;
   ButtonSaveAs->Left = PageControl1->Width - 96;
+  ButtonSaveC->Left = PageControl1->Width - 96;
   PaintBox1->Width = Form1->Width - 112;
   PaintBox1->Height = Form1->Height - 74;
 }
@@ -62,7 +63,8 @@ void __fastcall TForm1::ButtonLoadClick(TObject *Sender)
       break;
 
     case FMT_MYF:
-      return;
+      LoadBitmapFromMYF(OpenDialog1->FileName.c_str(), bm);
+      break;
 
     default:
       return;
