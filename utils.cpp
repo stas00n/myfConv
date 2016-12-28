@@ -46,6 +46,27 @@ void* Load(char* filename)
   }
 }
 
+DWORD Save(char* filename, BYTE* pMemory, DWORD size)
+{
+  DWORD tmp;
+  HANDLE hFile = CreateFile(filename,
+                            GENERIC_WRITE,
+                            0,             // No share
+                            NULL,          // SecurityAttributes
+                            CREATE_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL,
+                            NULL);         // No Template
+
+  if(hFile != INVALID_HANDLE_VALUE)
+  {
+    WriteFile(hFile, pMemory, size, &tmp, NULL);
+    CloseHandle(hFile);
+    return tmp;
+  }
+  else
+    return 0;
+}
+
 SUPPORTEDFORMATS GetFileFormat(char* filename)
 {
   DWORD tmp;
@@ -117,5 +138,98 @@ void LoadBitmapFromPNG(char* filename, Graphics::TBitmap* bm)
   }
   free(buffer);
 }
+
+bool SelectDirDialog(HWND hwndOwner, char* dir, char* title)
+{
+  static _ITEMIDLIST* pidl;
+  _browseinfoA bi;
+
+  bi.hwndOwner = hwndOwner;
+  bi.pidlRoot = NULL;
+  bi.pszDisplayName = dir;
+  bi.lpszTitle = title;
+  bi.ulFlags = BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
+  bi.lpfn = BrowseCallbackProc;
+  bi.lParam = (LONG)pidl;
+  bi.iImage = 0;
+
+  pidl =  SHBrowseForFolder(&bi);
+  if(pidl == NULL) return false;
+  SHGetPathFromIDList(pidl, dir);
+  return true;
+}
+
+CALLBACK BrowseCallbackProc(
+   HWND   hwnd,
+   UINT   uMsg,
+   LPARAM lParam,
+   LPARAM lpData
+)
+{
+  if(uMsg == BFFM_INITIALIZED)
+  {
+    SendMessage(hwnd,BFFM_SETSELECTION,false,lpData);
+   // SendMessage(hwnd,BFFM_SETEXPANDED,falfe,lpData);
+  }
+  return 0;
+}
+
+void FindFilesWithSubDirs(TStringList *sp, AnsiString DirName)
+{
+TSearchRec sr;
+if (DirName.Length())
+{
+  if (!FindFirst(DirName+"\\*.*",faAnyFile,sr))
+ do
+  {
+  if (!(sr.Name=="." || sr.Name==".."))
+   if (((sr.Attr & faDirectory) == faDirectory ) ||
+   (sr.Attr == faDirectory))
+   {
+     FindFilesWithSubDirs(sp, DirName+"\\"+sr.Name);
+   }
+    else
+    {
+    sp->Add(DirName+"\\"+sr.Name);
+    }
+  }
+ while (!FindNext(sr));
+ FindClose(sr);
+ }
+}
+
+void FindFiles(TStringList *sp, AnsiString DirName)
+{
+  TSearchRec sr;
+  if (DirName.Length() == 0) return;
+
+  int res = FindFirst(DirName+"\\*.*",faAnyFile,sr);
+  if (res != 0) return;                            //found nothing
+  do
+  {
+    if(!(sr.Attr & faDirectory) &&
+       !(sr.Attr & FILE_ATTRIBUTE_REPARSE_POINT))  //found file
+    {
+      sp->Add(DirName+"\\"+sr.Name);
+    }
+  }
+  while (!FindNext(sr));
+
+  FindClose(sr);
+}
+
+//------------------------------------------------------------------------------
+AnsiString ExtractFileNameOnly(const AnsiString filepath)
+{
+  AnsiString name, ext;
+  name = ExtractFileName(filepath);
+  ext = ExtractFileExt(filepath);
+  name = name.Delete(name.Length() - ext.Length() + 1, ext.Length());
+  return name;
+}
+
+
+
+
 
 

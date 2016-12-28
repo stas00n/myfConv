@@ -11,7 +11,8 @@
       lpng\pngwutil.obj zlib\compress.obj zlib\crc32.obj zlib\deflate.obj 
       zlib\gzclose.obj zlib\gzlib.obj zlib\gzread.obj zlib\gzwrite.obj 
       zlib\infback.obj zlib\inffast.obj zlib\inflate.obj zlib\inftrees.obj 
-      zlib\trees.obj zlib\uncompr.obj zlib\zutil.obj utils.obj zlib\adler32.obj"/>
+      zlib\trees.obj zlib\uncompr.obj zlib\zutil.obj utils.obj zlib\adler32.obj 
+      myf.obj"/>
     <RESFILES value="ImgConv.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -19,7 +20,7 @@
     <RESDEPEN value="$(RESFILES) Unit1.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="vcl.lib rtl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib vclx.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
       vcldbx.bpi ibxpress.bpi dsnap.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi 
       teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
@@ -34,7 +35,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value="_DEBUG;NO_WIN32_LEAN_AND_MEAN"/>
     <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="ImgConv.cpp"/>
     <INCLUDEPATH value="&quot;C:\Program Files (x86)\Borland\CBuilder6\Projects&quot;;zlib;lpng;$(BCB)\include;$(BCB)\include\vcl"/>
@@ -44,7 +45,8 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I&quot;C:\Program Files (x86)\Borland\CBuilder6\Projects&quot; -Izlib -Ilpng 
-      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG 
+      -DNO_WIN32_LEAN_AND_MEAN -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tW -tWM"/>
     <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
@@ -95,6 +97,8 @@
       <FILE FILENAME="zlib\zutil.c" FORMNAME="" UNITNAME="zutil.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="utils.cpp" FORMNAME="" UNITNAME="utils" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="zlib\adler32.c" FORMNAME="" UNITNAME="adler32" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="utils.h" FORMNAME="" UNITNAME="utils.h" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="myf.cpp" FORMNAME="" UNITNAME="myf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -128,12 +132,13 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=5
+Count=6
 Item0=C:\Program Files (x86)\Borland\CBuilder6\Projects;zlib;lpng;$(BCB)\include;$(BCB)\include\vcl
-Item1=zlib;lpng;$(BCB)\include;$(BCB)\include\vcl
-Item2=zlib;lpng;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
-Item3=zlib;lpng;C:\Program Files (x86)\Borland\CBuilder6\Projects;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
-Item4=C:\Program Files (x86)\Borland\CBuilder6\Projects;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
+Item1=C:\Program Files (x86)\Borland\CBuilder6\Projects;zlib;lpng;$(BCB)\include;$(BCB)\include\vcl;\
+Item2=zlib;lpng;$(BCB)\include;$(BCB)\include\vcl
+Item3=zlib;lpng;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
+Item4=zlib;lpng;C:\Program Files (x86)\Borland\CBuilder6\Projects;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
+Item5=C:\Program Files (x86)\Borland\CBuilder6\Projects;D:\Work\Borland\ImgConv;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=5
@@ -148,8 +153,10 @@ Count=1
 Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
+Count=3
+Item0=_DEBUG;NO_WIN32_LEAN_AND_MEAN
+Item1=_DEBUG;
+Item2=_DEBUG
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
