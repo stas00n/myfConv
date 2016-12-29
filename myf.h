@@ -1,8 +1,9 @@
 #ifndef _MYF_H_
 #define _MYF_H_
 
+#include <vcl.h>
 #include <windows.h>
-#include <Graphics.hpp>
+
 
 typedef struct
 {
@@ -24,8 +25,9 @@ typedef struct
  BYTE reserved;
 }RGB32_T;
 
-int SaveBitmapToMYF(char* filename, MYFHEAD_T* head, WORD* clut, BYTE* sequence);
+int SaveBitmapToMYF(char* filename, Graphics::TBitmap* bm);
 int LoadBitmapFromMYF(char* filename, Graphics::TBitmap* bm);
+void* BitmapToMYF(Graphics::TBitmap* bm, DWORD* size);
 
 WORD RGB32To16(RGB32_T* src, WORD* dest);
 DWORD RGB16To32(WORD* src, RGB32_T* dest);
@@ -42,7 +44,7 @@ BYTE GetColorIndex(WORD* color, WORD* CLUT, WORD clutSize);
 // Beta funcs
 void ConvertBitmap32To16Gray(Graphics::TBitmap* bm, WORD* bm16);
 WORD CountColors(WORD* bitmap16, DWORD pixelCount);
-void FindMinColDiff(DWORD pixelCount, WORD* bm16);
+
 
 #endif /* _MYF_H_ */
  
