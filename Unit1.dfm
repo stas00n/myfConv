@@ -23,8 +23,8 @@ object Form1: TForm1
     Top = 0
     Width = 469
     Height = 375
-    ActivePage = TabSheetSingle
-    TabIndex = 0
+    ActivePage = TabSheetMulti
+    TabIndex = 1
     TabOrder = 0
     object TabSheetSingle: TTabSheet
       Caption = 'Single'
@@ -132,9 +132,8 @@ object Form1: TForm1
         Top = 118
         Width = 248
         Height = 24
-        ReadOnly = True
         TabOrder = 6
-        Text = '*.png; *.bmp'
+        Text = '.png'
       end
       object CheckBoxSubDirs: TCheckBox
         Left = 69
