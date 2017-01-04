@@ -228,6 +228,22 @@ AnsiString ExtractFileNameOnly(const AnsiString filepath)
   return name;
 }
 
+BOOL CreateFullDirectory(LPCTSTR dirName, LPSECURITY_ATTRIBUTES lpSA)
+{
+    char tmpName[MAX_PATH];
+    strcpy(tmpName, dirName);
+
+    // Create parent directories
+    for (LPTSTR p = strchr(tmpName, '\\'); p; p = strchr(p + 1, '\\'))
+    {
+        *p = 0;
+        ::CreateDirectory(tmpName, lpSA);  // may or may not already exist
+        *p = '\\';
+    }
+
+    return ::CreateDirectory(dirName, lpSA);
+}
+
 
 
 

@@ -22,7 +22,7 @@ void LoadBitmapFromPNG(char* filename, Graphics::TBitmap* bm);
 void FindFilesWithSubDirs(TStringList *sp, AnsiString DirName);
 void FindFiles(TStringList *sp, AnsiString DirName);
 AnsiString ExtractFileNameOnly(const AnsiString filepath);
-
+BOOL CreateFullDirectory(LPCTSTR dirName, LPSECURITY_ATTRIBUTES lpSA);
 
 CALLBACK BrowseCallbackProc(
    HWND   hwnd,

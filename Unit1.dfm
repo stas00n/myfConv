@@ -133,7 +133,7 @@ object Form1: TForm1
         Width = 248
         Height = 24
         TabOrder = 6
-        Text = '.png'
+        Text = '.png;'
       end
       object CheckBoxSubDirs: TCheckBox
         Left = 69

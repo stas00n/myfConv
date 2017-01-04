@@ -227,11 +227,24 @@ void __fastcall TForm1::ButtonStartClick(TObject *Sender)
   Memo1->Text = sl->Text;
   Memo1->Lines->Add("Total "+IntToStr(sl->Count)+ " .bmp Files Found");
 
-
+  AnsiString fnload, fnsave, dir;
+  void* myf;
+  DWORD size;
   for (int i = 0; i < sl->Count; i++)
   {
-
+    LoadBitmapFromPNG(sl->Strings[i].c_str(), bm);
+    fnsave = (sl->Strings[i].c_str());
+    fnsave = fnsave.Delete(1, EditSrcDir->Text.Length());
+    fnsave.Insert(EditDestDir->Text, 0);
+    fnsave = fnsave.Delete(fnsave.Length() - 3,4);
+    fnsave += ".myf";
+    dir = ExtractFileDir(fnsave);
+    CreateFullDirectory(dir.c_str(), NULL);
+    myf = BitmapToMYF(bm, &size);
+    Save(fnsave.c_str(), (byte*)myf, size);
+    free(myf);
   }
+
 
 
 
