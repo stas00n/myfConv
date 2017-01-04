@@ -226,6 +226,15 @@ void __fastcall TForm1::ButtonStartClick(TObject *Sender)
   }
   Memo1->Text = sl->Text;
   Memo1->Lines->Add("Total "+IntToStr(sl->Count)+ " .bmp Files Found");
+
+
+  for (int i = 0; i < sl->Count; i++)
+  {
+
+  }
+
+
+
   delete sl;
 }
 //---------------------------------------------------------------------------
