@@ -2,62 +2,62 @@ object Form1: TForm1
   Left = 399
   Top = 186
   Width = 488
-  Height = 439
+  Height = 440
   Caption = 'MYF Image Converter v0.1'
   Color = clBtnFace
-  Constraints.MinHeight = 368
-  Constraints.MinWidth = 420
+  Constraints.MinHeight = 440
+  Constraints.MinWidth = 488
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
   OnDestroy = FormDestroy
   OnResize = FormResize
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 16
   object PageControl1: TPageControl
-    Left = 4
+    Left = 5
     Top = 0
-    Width = 381
-    Height = 305
+    Width = 469
+    Height = 375
     ActivePage = TabSheetSingle
     TabIndex = 0
     TabOrder = 0
     object TabSheetSingle: TTabSheet
       Caption = 'Single'
       object PaintBox1: TPaintBox
-        Left = -16
-        Top = -11
-        Width = 256
-        Height = 256
+        Left = -20
+        Top = -14
+        Width = 315
+        Height = 316
         OnPaint = PaintBox1Paint
       end
       object ButtonLoad: TButton
-        Left = 294
-        Top = 8
-        Width = 75
-        Height = 25
+        Left = 362
+        Top = 10
+        Width = 92
+        Height = 31
         Caption = 'Load'
         TabOrder = 0
         OnClick = ButtonLoadClick
       end
       object ButtonSaveAs: TButton
-        Left = 294
-        Top = 40
-        Width = 75
-        Height = 25
+        Left = 362
+        Top = 49
+        Width = 92
+        Height = 31
         Caption = 'Save As'
         TabOrder = 1
         OnClick = ButtonSaveAsClick
       end
       object ButtonSaveC: TButton
-        Left = 293
-        Top = 72
-        Width = 75
-        Height = 26
+        Left = 361
+        Top = 89
+        Width = 92
+        Height = 32
         Caption = 'Save .c'
         TabOrder = 2
         OnClick = ButtonSaveCClick
@@ -67,80 +67,80 @@ object Form1: TForm1
       Caption = 'Batch'
       ImageIndex = 1
       object LabelFilter: TLabel
-        Left = 32
-        Top = 100
-        Width = 22
-        Height = 13
+        Left = 39
+        Top = 123
+        Width = 29
+        Height = 16
         Caption = 'Filter'
       end
       object EditSrcDir: TEdit
-        Left = 24
-        Top = 16
-        Width = 257
+        Left = 30
+        Top = 20
+        Width = 316
         Height = 24
         ReadOnly = True
         TabOrder = 0
         Text = 'Select Source Directory...'
       end
       object EditDestDir: TEdit
-        Left = 24
-        Top = 48
-        Width = 257
+        Left = 30
+        Top = 59
+        Width = 316
         Height = 24
         ReadOnly = True
         TabOrder = 1
         Text = 'Select Save Directory...'
       end
       object ButtonSelSrc: TButton
-        Left = 288
-        Top = 12
-        Width = 25
-        Height = 25
+        Left = 354
+        Top = 15
+        Width = 31
+        Height = 31
         Caption = '...'
         TabOrder = 2
         OnClick = ButtonSelSrcClick
       end
       object ButtonSelDestDir: TButton
-        Left = 288
-        Top = 44
-        Width = 25
-        Height = 25
+        Left = 354
+        Top = 54
+        Width = 31
+        Height = 31
         Caption = '...'
         TabOrder = 3
         OnClick = ButtonSelDestDirClick
       end
       object ButtonStart: TButton
-        Left = 240
-        Top = 136
-        Width = 75
-        Height = 25
+        Left = 295
+        Top = 167
+        Width = 93
+        Height = 31
         Caption = 'Start'
         TabOrder = 4
         OnClick = ButtonStartClick
       end
       object Memo1: TMemo
-        Left = 32
-        Top = 168
-        Width = 305
-        Height = 81
+        Left = 39
+        Top = 207
+        Width = 376
+        Height = 99
         Lines.Strings = (
           'Memo1')
         TabOrder = 5
       end
       object EditFilter: TEdit
-        Left = 80
-        Top = 96
-        Width = 201
+        Left = 98
+        Top = 118
+        Width = 248
         Height = 24
         ReadOnly = True
         TabOrder = 6
         Text = '*.png; *.bmp'
       end
       object CheckBoxSubDirs: TCheckBox
-        Left = 56
-        Top = 136
-        Width = 97
-        Height = 17
+        Left = 69
+        Top = 167
+        Width = 119
+        Height = 21
         Caption = 'Include Sub Dirs'
         TabOrder = 7
       end
@@ -155,7 +155,6 @@ object Form1: TForm1
       end
       object SaveAs1: TMenuItem
         Caption = 'Save &As...'
-        OnClick = SaveAs1Click
       end
       object N2: TMenuItem
         Caption = '-'
@@ -177,6 +176,7 @@ object Form1: TForm1
     Top = 8
   end
   object SaveDialog1: TSaveDialog
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
     Left = 320
     Top = 40
   end

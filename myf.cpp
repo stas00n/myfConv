@@ -112,9 +112,59 @@ BYTE GetColorIndex(WORD* color, WORD* CLUT, WORD clutSize)
   return indx;
 }
 
-int SaveBitmapToMYF(char* filename, MYFHEAD_T* head, WORD* clut, BYTE* sequence)
+void* BitmapToMYF(Graphics::TBitmap* bm, DWORD* size)
 {
-  return 0;
+
+  DWORD pixelCount = bm->Width * bm->Height;
+
+  // Try allocate enough space
+  void* pRet = malloc(pixelCount * 4);
+  if(pRet == NULL)
+    return NULL;
+
+  // File header
+  MYFHEAD_T* head = (MYFHEAD_T*)pRet;
+  // Fill known values
+  memcpy(head->id, "MYFM",4);
+  head->imgWidth = bm->Width;
+  head->imgHidth = bm->Height;
+  head->clutOffset = (WORD)sizeof(MYFHEAD_T);
+  head->reserved = 0;
+
+  // Allocate 16-bit bitmap buffer
+  WORD* bm16 = new WORD[pixelCount];
+
+  WORD clut[254];
+  ConvertBitmap32To16(bm, bm16);
+  head->clutUsed = BuildCLUT(bm16, pixelCount, clut);
+
+  // Convert to grayscale if many colors
+  // TODO: Palette reduction
+  if(head->clutUsed == 254)
+  {
+    ConvertBitmap32To16Gray(bm, bm16);
+    head->clutUsed = BuildCLUT(bm16, pixelCount, clut);
+  }
+
+  // Write palette
+  memcpy((BYTE*)pRet + head->clutOffset, (BYTE*)clut, head->clutUsed * 2);
+  // Pixel sequence start offset
+  head->sequenceOffset = head->clutOffset + head->clutUsed * 2;
+
+  // Allocate enough buffer
+  BYTE* sequence = new BYTE[pixelCount * 4];
+
+  head->sequenceSize = BuildSequence(sequence, pixelCount, bm16, pixelCount, clut, head->clutUsed);
+  // Write Pixel sequence and output size
+  if(head->sequenceSize > 0)
+  {
+    memcpy((BYTE*)pRet + head->sequenceOffset, sequence, head->sequenceSize);
+    *size = head->sequenceOffset + head->sequenceSize;
+  }
+
+  delete sequence;
+  delete bm16;
+  return pRet;
 }
 
 WORD RGB32To16(RGB32_T* src, WORD* dest)
@@ -152,11 +202,6 @@ void ConvertBitmap32To16(Graphics::TBitmap* bm, WORD* bm16)
     }
   }
 }
-
-
-
-
-
 
 
  // Beta funcs
@@ -205,66 +250,6 @@ WORD CountColors(WORD* bitmap16, DWORD pixelCount)
   }
   return indx;//CLUT used size;
 }
-void FindMinColDiff(DWORD pixelCount, WORD* bm16)
-{
-// Count colors
-  WORD indx = 0;
-  WORD tmp;
-  bool exists;
-  WORD CLUT[65536];
-  for(DWORD i = 0; i < pixelCount; i++)
-  {
-    tmp = *(bm16++);
-    exists = false;
-    // Check color already exist in table
-    for(WORD j = 0; j < indx; j++)
-    {
-      if(CLUT[j] == tmp) exists = true;
-    }
-    if(!exists)
-    {
-      CLUT[indx] = tmp;
-      indx++;
-    }
-  }
-
-
-  WORD ncol = indx;
-
-WORD c1,c2;
-typedef struct
-{
- BYTE R;
- BYTE G;
- BYTE B;
-}nrgb_t;
-nrgb_t nrgb1, nrgb2;
-
-float* diff = new float[ncol];
-for (WORD i = 0; i < ncol; i++)
-{
-  
-}
-
-
-
-nrgb1.B = (c1 & 0x1F) << 1;
-c1 >>= 5;
-nrgb1.G = (c1 & 0x3F);
-c1 >>= 6;
-nrgb1.R = (c1 & 0x1F) << 1;
-
-nrgb2.B = (c2 & 0x1F) << 1;
-c2 >>= 5;
-nrgb2.G = (c2 & 0x3F);
-c2 >>= 6;
-nrgb2.R = (c2 & 0x1F) << 1;
-
-//diff = pow((nrgb1.R - nrgb2.R), 2);
-//diff += pow((nrgb1.G - nrgb2.G), 2);
-//diff += pow((nrgb1.B - nrgb2.B), 2);
-//diff = pow(diff, 0.5);
-}
 
 int LoadBitmapFromMYF(char* filename, Graphics::TBitmap* bm)
 {
@@ -280,7 +265,7 @@ int LoadBitmapFromMYF(char* filename, Graphics::TBitmap* bm)
   }
   WORD* clut = (WORD*)((BYTE*)myf + head->clutOffset);
   DWORD* img = new DWORD[head->imgWidth * head->imgHidth];
-  DWORD imglen = head->imgWidth * head->imgHidth;
+  //DWORD imglen = head->imgWidth * head->imgHidth;
   DWORD imgindx = 0;
   BYTE* stream = (BYTE*)myf + head->sequenceOffset;
   BYTE indexedPixl;
@@ -322,7 +307,7 @@ int LoadBitmapFromMYF(char* filename, Graphics::TBitmap* bm)
   {
     for(x = 0; x < bm->Width; x++)
     {
-      c = img[imgindx++];
+      c = (TColor)img[imgindx++];
       bm->Canvas->Pixels[x][y] = c;
     }
   }

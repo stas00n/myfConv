@@ -52,7 +52,6 @@ __published:	// IDE-managed Components
         void __fastcall ButtonLoadClick(TObject *Sender);
         void __fastcall Open1Click(TObject *Sender);
         void __fastcall ButtonSaveAsClick(TObject *Sender);
-        void __fastcall SaveAs1Click(TObject *Sender);
         void __fastcall Exit1Click(TObject *Sender);
         void __fastcall ButtonSelSrcClick(TObject *Sender);
         void __fastcall ButtonSelDestDirClick(TObject *Sender);

@@ -28,13 +28,13 @@ void __fastcall TForm1::FormDestroy(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
-  PageControl1->Width = Form1->Width - 24;
-  PageControl1->Height = Form1->Height - 64;
-  ButtonLoad->Left = PageControl1->Width - 96;
-  ButtonSaveAs->Left = PageControl1->Width - 96;
-  ButtonSaveC->Left = PageControl1->Width - 96;
-  PaintBox1->Width = Form1->Width - 112;
-  PaintBox1->Height = Form1->Height - 74;
+  PageControl1->Width = Form1->ClientWidth - 10;
+  PageControl1->Height = Form1->ClientHeight - 10;
+  ButtonLoad->Left = PageControl1->ClientWidth - 110;
+  ButtonSaveAs->Left = PageControl1->ClientWidth - 110;
+  ButtonSaveC->Left = PageControl1->ClientWidth - 110;
+  PaintBox1->Width = Form1->ClientWidth - 112;
+  PaintBox1->Height = Form1->ClientHeight - 24;
 }
 //---------------------------------------------------------------------------
 
@@ -81,67 +81,58 @@ void __fastcall TForm1::Open1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
-
-
 void __fastcall TForm1::ButtonSaveAsClick(TObject *Sender)
 {
-  if(!SaveDialog1->Execute()) return;
-  MYFHEAD_T head;
+  if(!SaveDialog1->Execute())
+    return;
 
-  memcpy(head.id, "MYFM",4);
-  head.imgWidth = bm->Width;
-  head.imgHidth = bm->Height;
-  head.clutOffset = (WORD)sizeof(head);
-  head.reserved = 0;
+  DWORD fileSize;
 
-  DWORD pixelCount = bm->Width * bm->Height;
-  WORD* bm16 = new WORD[pixelCount];
-
-
-
-  WORD clut[254];
-  ConvertBitmap32To16(bm, bm16);
-  WORD ncol = CountColors(bm16,pixelCount);
-  head.clutUsed = BuildCLUT(bm16, pixelCount, clut);
-  // Convert to grayscale
-  if(head.clutUsed == 254)
-  {
-    ConvertBitmap32To16Gray(bm, bm16);
-    head.clutUsed = BuildCLUT(bm16, pixelCount, clut);
-  }
-
-  head.sequenceOffset = head.clutOffset + head.clutUsed * 2;
-
-  BYTE* sequence = new BYTE[pixelCount];
-  head.sequenceSize = BuildSequence(sequence, pixelCount, bm16, pixelCount, clut, head.clutUsed);
-  if(head.sequenceSize > 0)
-  {
-    DWORD fSize = head.sequenceOffset + head.sequenceSize;
-    BYTE* myf = new BYTE[fSize];
-    memcpy(myf,(BYTE*)&head, sizeof(head)); //Write header
-    memcpy(myf + head.clutOffset,(BYTE*)clut, head.clutUsed * 2);//Write clut
-    memcpy(myf + head.sequenceOffset, sequence, head.sequenceSize);//Write stream
-    Save(SaveDialog1->FileName.c_str(), myf, fSize);
-  }
-  delete sequence;
-  delete bm16;
+  void* pFile = BitmapToMYF(bm, &fileSize);
+  Save(SaveDialog1->FileName.c_str(), (BYTE*)pFile, fileSize);
+  free(pFile);
 }
-//---------------------------------------------------------------------------
 
-void __fastcall TForm1::SaveAs1Click(TObject *Sender)
+//---------------------------------------------------------------------------
+void __fastcall TForm1::ButtonSaveCClick(TObject *Sender)
 {
-  ButtonSaveAsClick(NULL);
+  if(!SaveDialog1->Execute())
+    return;
+  // Convert in memory
+  DWORD fileSize;
+  void* myf = (BYTE*)BitmapToMYF(bm, &fileSize);
+
+  AnsiString s,fn;
+  TStringList* cfile = new TStringList;
+
+  fn = ExtractFileNameOnly(SaveDialog1->FileName);
+  cfile->Add("extern const unsigned char " + fn +"[] = {");
+
+  BYTE* p = (BYTE*)myf;
+  for(DWORD i = 0; i < fileSize; i)
+  {
+    s = "  ";
+    for(DWORD j = 0; j < 16; j++)
+    {
+      s += ("0x" + IntToHex(*(p++), 2) + ", ");
+      if(++i >= fileSize) break;
+    }
+    cfile->Add(s);
+  }
+
+  int end = cfile->Strings[cfile->Count - 1].Length();
+  cfile->Strings[cfile->Count - 1] = cfile->Strings[cfile->Count - 1].Delete(end-1,2);
+  cfile->Add("};");
+  cfile->SaveToFile(SaveDialog1->FileName);
+  
+  delete cfile;
+  free(myf);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::Exit1Click(TObject *Sender)
 {
   Form1->Close();        
 }
-//---------------------------------------------------------------------------
-
-
 
 //---------------------------------------------------------------------------
 
@@ -234,87 +225,10 @@ void __fastcall TForm1::ButtonStartClick(TObject *Sender)
     indx++;
   }
   Memo1->Text = sl->Text;
-  //Convert & Save:
-  AnsiString saveFilename;
-  //CMyGfx g;
-  for(indx = 0; indx < sl->Count; indx++)
-  {
-   // saveFilename = sl->Strings[indx];
-   // saveFilename.Delete(saveFilename.Length()-3,4);
-   // saveFilename += ".myf";
-  //  g.Bm2My(sl->Strings[indx].c_str(), saveFilename.c_str());
-  }
-
   Memo1->Lines->Add("Total "+IntToStr(sl->Count)+ " .bmp Files Found");
   delete sl;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::ButtonSaveCClick(TObject *Sender)
-{
- if(!SaveDialog1->Execute()) return;
-  MYFHEAD_T head;
 
-  memcpy(head.id, "MYFM",4);
-  head.imgWidth = bm->Width;
-  head.imgHidth = bm->Height;
-  head.clutOffset = (WORD)sizeof(head);
-  head.reserved = 0;
-
-  DWORD pixelCount = bm->Width * bm->Height;
-  WORD* bm16 = new WORD[pixelCount];
-
-
-
-  WORD clut[254];
-  ConvertBitmap32To16(bm, bm16);
-  WORD ncol = CountColors(bm16,pixelCount);
-  head.clutUsed = BuildCLUT(bm16, pixelCount, clut);
-  // Convert to grayscale
-  if(head.clutUsed == 254)
-  {
-    ConvertBitmap32To16Gray(bm, bm16);
-    head.clutUsed = BuildCLUT(bm16, pixelCount, clut);
-  }
-
-  head.sequenceOffset = head.clutOffset + head.clutUsed * 2;
-
-  BYTE* sequence = new BYTE[pixelCount];
-  head.sequenceSize = BuildSequence(sequence, pixelCount, bm16, pixelCount, clut, head.clutUsed);
-  if(head.sequenceSize > 0)
-  {
-    DWORD fSize = head.sequenceOffset + head.sequenceSize;
-    BYTE* myf = new BYTE[fSize];
-    memcpy(myf,(BYTE*)&head, sizeof(head)); //Write header
-    memcpy(myf + head.clutOffset,(BYTE*)clut, head.clutUsed * 2);//Write clut
-    memcpy(myf + head.sequenceOffset, sequence, head.sequenceSize);//Write stream
-
-    AnsiString s,fn;
-    TStringList* cfile = new TStringList;
-
-    fn = ExtractFileNameOnly(SaveDialog1->FileName);
-    cfile->Add("extern const unsigned char " + fn +"[] = {");
-
-
-    for(DWORD i = 0; i < fSize; i)
-    {
-      s = "  ";
-      for(DWORD j = 0; j < 16; j++)
-      {
-        s += ("0x" + IntToHex(*(myf++), 2) + ", ");
-        if(++i >= fSize) break;
-      }
-      cfile->Add(s);
-    }
-    int end = cfile->Strings[cfile->Count - 1].Length();
-    cfile->Strings[cfile->Count - 1] = cfile->Strings[cfile->Count - 1].Delete(end-1,2);
-    cfile->Add("};");
-    cfile->SaveToFile(SaveDialog1->FileName);
-    delete cfile;
-  }
-
-  delete sequence;
-  delete bm16;
-}
-//---------------------------------------------------------------------------
 
