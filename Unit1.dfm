@@ -23,8 +23,8 @@ object Form1: TForm1
     Top = 0
     Width = 469
     Height = 375
-    ActivePage = TabSheetMulti
-    TabIndex = 1
+    ActivePage = TabSheetSingle
+    TabIndex = 0
     TabOrder = 0
     object TabSheetSingle: TTabSheet
       Caption = 'Single'
@@ -61,6 +61,15 @@ object Form1: TForm1
         Caption = 'Save .c'
         TabOrder = 2
         OnClick = ButtonSaveCClick
+      end
+      object Button1: TButton
+        Left = 360
+        Top = 136
+        Width = 75
+        Height = 25
+        Caption = 'Bmp16.c'
+        TabOrder = 3
+        OnClick = Button1Click
       end
     end
     object TabSheetMulti: TTabSheet

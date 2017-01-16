@@ -154,7 +154,7 @@ void* BitmapToMYF(Graphics::TBitmap* bm, DWORD* size)
   // Allocate enough buffer
   BYTE* sequence = new BYTE[pixelCount * 4];
 
-  head->sequenceSize = BuildSequence(sequence, pixelCount, bm16, pixelCount, clut, head->clutUsed);
+  head->sequenceSize = BuildSequence(sequence, pixelCount*4, bm16, pixelCount, clut, head->clutUsed);
   // Write Pixel sequence and output size
   if(head->sequenceSize > 0)
   {

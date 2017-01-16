@@ -124,7 +124,7 @@ void __fastcall TForm1::ButtonSaveCClick(TObject *Sender)
   cfile->Strings[cfile->Count - 1] = cfile->Strings[cfile->Count - 1].Delete(end-1,2);
   cfile->Add("};");
   cfile->SaveToFile(SaveDialog1->FileName);
-  
+
   delete cfile;
   free(myf);
 }
@@ -253,4 +253,39 @@ void __fastcall TForm1::ButtonStartClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+if(!SaveDialog1->Execute())
+    return;
+  DWORD n = bm->Width * bm->Height;
+  WORD* bm16 = new WORD[n];
+  ConvertBitmap32To16(bm, bm16);
+  AnsiString s,fn;
+  TStringList* cfile = new TStringList;
+
+  fn = ExtractFileNameOnly(SaveDialog1->FileName);
+  cfile->Add("extern const unsigned short " + fn +"[] = {");
+
+  WORD* p = bm16;
+  for(DWORD i = 0; i < n; i)
+  {
+    s = "  ";
+    for(DWORD j = 0; j < 8; j++)
+    {
+      s += ("0x" + IntToHex(*(p++), 4) + ", ");
+      if(++i >= n) break;
+    }
+    cfile->Add(s);
+  }
+
+  int end = cfile->Strings[cfile->Count - 1].Length();
+  cfile->Strings[cfile->Count - 1] = cfile->Strings[cfile->Count - 1].Delete(end-1,2);
+  cfile->Add("};");
+  cfile->SaveToFile(SaveDialog1->FileName);
+  
+  delete cfile;
+  delete bm16;
+}
+//---------------------------------------------------------------------------
 

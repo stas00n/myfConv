@@ -46,6 +46,7 @@ __published:	// IDE-managed Components
         TLabel *LabelFilter;
         TCheckBox *CheckBoxSubDirs;
         TButton *ButtonSaveC;
+        TButton *Button1;
         void __fastcall FormResize(TObject *Sender);
         void __fastcall FormDestroy(TObject *Sender);
         void __fastcall PaintBox1Paint(TObject *Sender);
@@ -57,6 +58,7 @@ __published:	// IDE-managed Components
         void __fastcall ButtonSelDestDirClick(TObject *Sender);
         void __fastcall ButtonStartClick(TObject *Sender);
         void __fastcall ButtonSaveCClick(TObject *Sender);
+        void __fastcall Button1Click(TObject *Sender);
 private:	// User declarations
         Graphics::TBitmap* bm;
 public:		// User declarations
